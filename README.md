@@ -1,4 +1,4 @@
-# UFO System (유니버시티 페스티벌 오더 시스템) 프로젝트 개요
+# UFO System (University Festival Order System) 프로젝트 개요
 
 ## 1. 시스템 구성 요소
 
