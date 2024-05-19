@@ -1,0 +1,7 @@
+.MuiContainer-root.MuiContainer-maxWidthXl {
+  max-width: 100%;
+}
+.notLoginTopBar
+  .MuiButtonBase-root.MuiIconButton-root.MuiIconButton-colorInherit.MuiIconButton-sizeLarge.css-1pz7awu-MuiButtonBase-root-MuiIconButton-root {
+  display: none;
+}

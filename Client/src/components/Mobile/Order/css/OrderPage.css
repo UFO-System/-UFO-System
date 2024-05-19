@@ -1,0 +1,34 @@
+.app {
+  text-align: center;
+}
+.name h4 {
+  text-align: left;
+  padding-left: 20px;
+}
+.name {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+  height: 70px;
+  line-height: 70px;
+  margin: 0;
+}
+
+.menu {
+  border-bottom: 1px solid lightgray;
+  padding-left: 20px;
+  text-align: left;
+}
+.OrderPageBtn {
+  float: right;
+}
+.orderBt {
+  width: 120px;
+  height: 50px;
+  float: none;
+}
+
+.bottom {
+  border-bottom: 1px solid lightgray;
+}
