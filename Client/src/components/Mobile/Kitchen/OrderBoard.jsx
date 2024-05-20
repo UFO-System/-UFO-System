@@ -1,15 +1,26 @@
+import React from "react";
+import "./css/KitchenPage.css";
 import { Box } from "@mui/material";
 
-function OrderItem() {
+const OrderBoard = ({ order_id }) => {
+  const menuNameLength = (menuName) => {
+    if (menuName.length >= 6) {
+      return <>{menuName.substring(0, 6)}</>;
+    } else {
+      return menuName;
+    }
+  };
+
   return (
     <Box
       sx={{
+        position: "relative",
         border: "3px solid #3C2A2C",
-        width: "22vw",
-        height: "96vh",
+        width: "23.5vw",
+        height: "80vh",
         borderRadius: 5,
         display: "inline-block",
-        top: `0vh`,
+        top: "1vh",
         left: `2vw`,
         margin: 1,
         boxSizing: "border-box",
@@ -20,7 +31,7 @@ function OrderItem() {
         },
         "&:not(:hover)": {
           backgroundColor: "##E7E7E7",
-          transition: "background-color 0.5s", // Added transition for background-color
+          transition: "background-color 0.5s",
         },
       }}
     >
@@ -41,28 +52,14 @@ function OrderItem() {
           </div>
         </tr>
         <tr>
-          <td colSpan="3">계란찜</td>
-        </tr>
-        <tr>
-          <td colSpan="3">아구찜</td>
-        </tr>
-        <tr>
-          <td colSpan="3">대게찜</td>
-        </tr>
-        <tr>
-          <td colSpan="3">만두찜</td>
-        </tr>
-        <tr>
-          <td colSpan="3">소주</td>
-        </tr>
-        <tr>
-          <td colSpan="3">.</td>
-        </tr>
-        <tr>
-          <td colSpan="3">.</td>
+          <td colSpan="3">
+            {menuNameLength(order_id.menu_name)}{" "}
+            {order_id.order_cnt === 1 ? "" : order_id.order_cnt}
+          </td>
         </tr>
       </table>
     </Box>
   );
-}
-export default OrderItem;
+};
+
+export default OrderBoard;

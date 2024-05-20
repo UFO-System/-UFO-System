@@ -12,8 +12,7 @@ import { useCookies } from "react-cookie";
 import { AppBar, Divider } from "@mui/material";
 import "./css/TopBar.css";
 import { useState } from "react";
-import Icon from "@mdi/react";
-import { mdiUfoOutline } from "@mdi/js";
+import UFO from "../../../../assets/UFO.png";
 const menuLists = ["주문 관리", "메뉴 관리", "매출 관리"];
 const pages = ["OrderManage", "RecipeManage", "SalesManage"];
 function TopBar({ children }) {
@@ -40,7 +39,7 @@ function TopBar({ children }) {
         <Container maxWidth="xl" sx={{ margin: "0" }}>
           <Toolbar disableGutters>
             <Box sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}>
-              <Icon path={mdiUfoOutline} size={1.8} />
+              <img src={UFO} style={{ width: "43px", height: "43px" }} />
             </Box>
             <Typography
               variant="h6"
@@ -102,7 +101,7 @@ function TopBar({ children }) {
               </Menu>
             </Box>
             <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
-              <Icon path={mdiUfoOutline} size={2} />
+              <img src={UFO} style={{ width: "43px", height: "43px" }} />
             </Box>
             <Typography
               variant="h5"
@@ -159,6 +158,19 @@ function TopBar({ children }) {
               >
                 관리자:김호진
               </Typography>
+              <Button
+                onClick={() => navigate("/Phone")}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "inline",
+                  marginRight: "10px",
+                  marginLeft: "10px",
+                }}
+              >
+                모바일
+              </Button>
+              <Divider orientation="vertical" sx={{ display: "inline" }} />
               <Button
                 onClick={() => navigate("/MyPage")}
                 sx={{

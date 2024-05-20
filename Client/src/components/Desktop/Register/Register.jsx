@@ -1,27 +1,71 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import UserInfoForm from "../commons/UserForm/UserInfoForm";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import useUserValidation from "../commons/UserForm/useUserValidation";
 
 export default function Register() {
+  const [userData, setUserData] = useState({
+    id: "",
+    pw: "",
+    pwCheck: "",
+    userName: "",
+    account: "",
+    phoneNumber: "",
+  });
+
+  const [errors, setErrors] = useState({
+    id: false,
+    pw: false,
+    pwCheck: false,
+    userName: false,
+    account: false,
+    phoneNumber: false,
+  });
+  const validate = () => {
+    let newErrors = {
+      id: userData.id === "",
+      pw: userData.pw === "",
+      pwCheck: userData.pwCheck !== userData.pw,
+      userName: userData.userName === "",
+      account: userData.account === "",
+      phoneNumber: userData.phoneNumber.length !== 11,
+    };
+
+    setErrors(newErrors);
+    // 에러가 하나라도 있는지 검사
+    return !Object.values(newErrors).some((error) => error);
+  };
+
   const [pwCheck, setPwCheck] = useState("");
 
   const navigate = useNavigate();
-  const { handleChange, handleSubmit, userData, errors } = useUserValidation();
 
   const handleBack = () => {
     if (confirm("회원가입을 취소하시겠습니까?")) {
       navigate(-1);
     }
   };
-
-  // 회원가입 버튼
-  const SignUpbtn = (e) => {
-    handleSubmit(e);
-    // 서버 통신해야함
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setUserData((prevData) => ({ ...prevData, [id]: value }));
+    setErrors((prevErrors) => ({ ...prevErrors, [id]: false }));
   };
 
+  // 회원가입 버튼
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (confirm("회원가입 하시겠습니까?")) {
+      if (validate()) {
+        console.log(userData);
+        //서버 통신
+
+        alert("회원가입 되었습니다.");
+        navigate(-1);
+      } else {
+        alert("정보를 확인해주세요.");
+      }
+    }
+  };
   return (
     <div>
       <Button
@@ -53,7 +97,7 @@ export default function Register() {
           width: "100%",
           maxWidth: "700px",
         }}
-        onClick={(e) => SignUpbtn(e)}
+        onClick={(e) => handleSubmit(e)}
       >
         회원가입
       </Button>

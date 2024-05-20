@@ -1,22 +1,12 @@
-[
-  {
-    "OrderNum": "1",
-    "tableNum": "2",
-    "menu": ["계란찜", "아구찜", "대게찜", "만두찜", "소주"]
-  },
-  {
-    "OrderNum": "2",
-    "tableNum": "3",
-    "menu": ["치킨"]
-  },
-  {
-    "OrderNum": "3",
-    "tableNum": "4",
-    "menu": ["아구찜", "대게찜", "소주"]
-  },
-  {
-    "OrderNum": "4",
-    "tableNum": "5",
-    "menu": ["계란찜", "술국"]
-  }
-]
+{
+  "table1": [
+    {
+      "menu_name": "김치찌개",
+      "order_cnt": 2
+    },
+    {
+      "menu_name": "삶은계란된장김치열무김치",
+      "order_cnt": 1
+    }
+  ]
+}

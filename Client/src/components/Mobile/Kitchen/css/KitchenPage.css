@@ -1,13 +1,9 @@
-.kitchenBody {
+body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  height: 100vh;
   background-color: #e7e7e7;
-  text-align: center;
 }
 .kitchenTable {
-  margin: 0px;
   width: 100%;
   height: 100%;
   color: #3c2a2c;

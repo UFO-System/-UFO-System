@@ -1,10 +1,4 @@
-import {
-  Button,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { IconButton, InputAdornment, Paper, TextField } from "@mui/material";
 import React, { useState } from "react";
 import { AccountCircle, Visibility, VisibilityOff } from "@mui/icons-material";
 import LockIcon from "@mui/icons-material/Lock";
@@ -64,7 +58,7 @@ function UserInfoForm({ isMyPage, editState, errors, handleChange, userData }) {
                   disabled={isMyPage}
                   variant="standard"
                   value={userData.id}
-                  // onChange={}
+                  onChange={handleChange}
                   sx={{ marginBottom: "30px", maxWidth: "600px" }}
                   InputProps={{
                     startAdornment: (

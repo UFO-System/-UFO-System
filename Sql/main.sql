@@ -5,6 +5,13 @@ DROP TABLE IF EXISTS Total;
 DROP TABLE IF EXISTS Menu;
 DROP TABLE IF EXISTS Admin;
 
+DROP TABLE IF EXISTS Item;
+DROP TABLE IF EXISTS PayInfo;
+DROP TABLE IF EXISTS OrderTable;
+DROP TABLE IF EXISTS Total;
+DROP TABLE IF EXISTS Menu;
+DROP TABLE IF EXISTS Admin;
+
 CREATE TABLE `Admin` (
     `admin_id` VARCHAR(30) NOT NULL,
     `pwd` VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 필요',
@@ -45,7 +52,7 @@ CREATE TABLE `OrderTable` (
     `is_accept` BIGINT NOT NULL COMMENT '2 : 대기 | 1 : 수락 | 0 : 거절 | 3 : 주방 | 4 : 나감',
     `date` DATE NOT NULL,
     `table_num` BIGINT NOT NULL,
-    `bank_name`	VARCHAR(30)	NOT NULL,
+    `bank_name` VARCHAR(30) NOT NULL,
     PRIMARY KEY (`order_id`, `admin_id`)
 );
 
@@ -58,29 +65,25 @@ CREATE TABLE `Item` (
 );
 
 ALTER TABLE `Menu` ADD CONSTRAINT `FK_Admin_TO_Menu_1` FOREIGN KEY (
-	`admin_id`
-)
-REFERENCES `Admin` (
-	`admin_id`
+    `admin_id`
+) REFERENCES `Admin` (
+    `admin_id`
 );
 
 ALTER TABLE `OrderTable` ADD CONSTRAINT `FK_Admin_TO_OrderTable_1` FOREIGN KEY (
-	`admin_id`
-)
-REFERENCES `Admin` (
-	`admin_id`
+    `admin_id`
+) REFERENCES `Admin` (
+    `admin_id`
 );
 
 ALTER TABLE `Item` ADD CONSTRAINT `FK_OrderTable_TO_Item_1` FOREIGN KEY (
-	`order_id`
-)
-REFERENCES `OrderTable` (
-	`order_id`
+    `order_id`
+) REFERENCES `OrderTable` (
+    `order_id`
 );
 
 ALTER TABLE `Item` ADD CONSTRAINT `FK_Menu_TO_Item_1` FOREIGN KEY (
-	`menu_id`
-)
-REFERENCES `Menu` (
-	`menu_id`
+    `menu_id`
+) REFERENCES `Menu` (
+    `menu_id`
 );
