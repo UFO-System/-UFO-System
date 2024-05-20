@@ -10,6 +10,8 @@ DROP USER IF EXISTS 'OrderSystem'@'%';
 CREATE USER 'OrderSystem'@'%' IDENTIFIED WITH mysql_native_password BY 'order123';
 GRANT ALL PRIVILEGES ON *.* TO 'OrderSystem'@'%';
 FLUSH PRIVILEGES;
+CREATE DATABASE OrderSystem;
+
 
 -- 특정 호스트에서 접근 필요 시 사용자 생성 예시 (필요한 경우 사용)
 -- CREATE USER 'OrderSystem'@'localhost' IDENTIFIED WITH mysql_native_password BY 'order123';

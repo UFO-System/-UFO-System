@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS Admin;
 
 CREATE TABLE `Admin` (
     `admin_id` VARCHAR(30) NOT NULL,
-    `pwd` VARCHAR(30) NOT NULL COMMENT '암호화 필요',
+    `pwd` VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 필요',
     `admin_name` VARCHAR(90) NOT NULL,
     `bank` VARCHAR(30) NOT NULL,
     `back_account` VARCHAR(30) NOT NULL COMMENT '여기로 받아오는 것',
@@ -24,12 +24,11 @@ CREATE TABLE `Total` (
 
 CREATE TABLE `PayInfo` (
     `pay_id` BIGINT NOT NULL AUTO_INCREMENT,
-    `order_id` BIGINT NOT NULL,
     `bank` VARCHAR(30) NOT NULL,
     `bank_account` BIGINT NOT NULL,
     `pay_name` VARCHAR(30) NOT NULL,
     `pay_price` BIGINT NOT NULL,
-    PRIMARY KEY (`pay_id`, `order_id`)
+    PRIMARY KEY (`pay_id`)
 );
 
 CREATE TABLE `Menu` (
@@ -43,9 +42,10 @@ CREATE TABLE `Menu` (
 CREATE TABLE `OrderTable` (
     `order_id` BIGINT NOT NULL AUTO_INCREMENT,
     `admin_id` VARCHAR(30) NOT NULL,
-    `is_accept` BIGINT NOT NULL COMMENT '2 : 대기 | 1 : 수락 | 0 : 거절 | 3 : 주방',
+    `is_accept` BIGINT NOT NULL COMMENT '2 : 대기 | 1 : 수락 | 0 : 거절 | 3 : 주방 | 4 : 나감',
     `date` DATE NOT NULL,
     `table_num` BIGINT NOT NULL,
+    `bank_name`	VARCHAR(30)	NOT NULL,
     PRIMARY KEY (`order_id`, `admin_id`)
 );
 
@@ -83,11 +83,4 @@ ALTER TABLE `Item` ADD CONSTRAINT `FK_Menu_TO_Item_1` FOREIGN KEY (
 )
 REFERENCES `Menu` (
 	`menu_id`
-);
-
-ALTER TABLE `PayInfo` ADD CONSTRAINT `FK_OrderTable_TO_PayInfo_1` FOREIGN KEY (
-	`order_id`
-)
-REFERENCES `OrderTable` (
-	`order_id`
 );
