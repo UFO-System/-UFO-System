@@ -24,6 +24,7 @@ CREATE TABLE `Admin` (
 
 CREATE TABLE `Total` (
     `total_id` BIGINT NOT NULL AUTO_INCREMENT,
+    `items` VARCHAR(200) NOT NULL,
     `date` DATE NOT NULL,
     `price` BIGINT NOT NULL,
     PRIMARY KEY (`total_id`)
@@ -49,7 +50,7 @@ CREATE TABLE `Menu` (
 CREATE TABLE `OrderTable` (
     `order_id` BIGINT NOT NULL AUTO_INCREMENT,
     `admin_id` VARCHAR(30) NOT NULL,
-    `is_accept` BIGINT NOT NULL COMMENT '2 : 대기 | 1 : 수락 | 0 : 거절 | 3 : 주방 | 4 : 나감',
+    `is_accept` BIGINT NOT NULL COMMENT '2 : 대기 | 1 : 수락 및 주방 | 0 : 거절 | 3 : 나감',
     `date` DATE NOT NULL,
     `table_num` BIGINT NOT NULL,
     `bank_name` VARCHAR(30) NOT NULL,

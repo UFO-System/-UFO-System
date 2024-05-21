@@ -3,6 +3,13 @@ DROP PROCEDURE IF EXISTS UpdateAdminInfo;
 DROP PROCEDURE IF EXISTS RegisterAdmin;
 DROP PROCEDURE IF EXISTS InsertMenu;
 DROP PROCEDURE IF EXISTS DeleteMenu;
+DROP PROCEDURE IF EXISTS createOrder;
+DROP PROCEDURE IF EXISTS showPendingOrders;
+DROP PROCEDURE IF EXISTS acceptOrder;
+DROP PROCEDURE IF EXISTS rejectOrder;
+DROP PROCEDURE IF EXISTS completeOrder;
+DROP PROCEDURE IF EXISTS insertPayInfo;
+DROP PROCEDURE IF EXISTS copySales;
 
 -- 로그인
 -- : 사용자 조회 -> 비밀번호 검수(암호화)
@@ -159,32 +166,211 @@ END //
 
 DELIMITER ;
 
--- 주문
--- : 사용자가 먼저 주문 시
--- 1. 주문과 아이템을 받아옴 (아이템은 JSON)
--- 2. isAccept는 2로 처리
+-- 사용자가 주문
+-- 사용자가 menu를 골라 주문을 생성할 경우
+-- 사용자가 선택했던 menu들은 이 프로시저에서 JSON으로 받아온 뒤 item에 insert
+-- 그 후 order_id를 제외한(애초에 파라미터가 아니다.) 모든 파라미터로 주문에 insert
 
--- 주문 수락/거절
--- 1. 서버로부터 결제해야할 입금 금액과 임금자명이 DB로 옴 (파라미터, 입금 금액은 음식들의 총합으로)
--- 2. 현재 isAccept가 2인 애들을 select
--- 3. 버튼에 따라(파라미터) isAccept 수정
+DELIMITER $$
 
--- 입금 내역 검색
--- 1. 입금자명과 입금 금액에 따라 PayInfo select
+CREATE PROCEDURE createOrder(
+    IN p_admin_id VARCHAR(30),
+    IN p_is_accept BIGINT,
+    IN p_date DATE,
+    IN p_table_num BIGINT,
+    IN p_bank_name VARCHAR(30),
+    IN p_items JSON
+)
+BEGIN
+    DECLARE v_order_id BIGINT;
 
--- 수락된 메뉴 표시
--- 1. isAccept가 1인 애들을 select
+    -- Insert into OrderTable
+    INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
+    VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
 
--- 매출
--- 1. 1시간 단위로 주문에서 매출로 정보 복사 (남은 것들만)
--- 2. 또는, 프론트엔드에서 버튼 누르면 복사
+    SET v_order_id = LAST_INSERT_ID();
 
--- 주문 테이블 clear
--- 1. 1시간에 clear
+    -- Insert into Item from JSON
+    INSERT INTO Item (order_id, menu_id, count)
+    SELECT 
+        v_order_id,
+        menu_id,
+        count
+    FROM 
+        JSON_TABLE(p_items, '$[*]' COLUMNS (
+            menu_id BIGINT PATH '$.menu_id',
+            count BIGINT PATH '$.count'
+        )) AS item;
+END$$
 
--- 주방 모니터
--- 1. FIFO 순으로 가장 빠른 순서부터 실행
--- (이때, isAccept==1, 이후 주방으로 들어가면 isAccept==3)
--- 2. 주문 JOIN 아이템
--- 3. 주방에서 나가면 isAccept==4로 함
--- 4. 되돌리기를 원하면 나간 순(4인 애들 중 가장 마지막)대로 다시 isAccept==3으로 함
+DELIMITER ;
+
+-- 주문 표시
+-- isAccept가 2인 주문을 표시하는데, 그 주문에 연결된 item은 '대표음식 외 n건'으로 표시
+
+DELIMITER $$
+
+CREATE PROCEDURE showPendingOrders()
+BEGIN
+    SELECT 
+        o.order_id,
+        o.admin_id,
+        o.date,
+        o.table_num,
+        o.bank_name,
+        CASE 
+            WHEN COUNT(i.menu_id) > 1 THEN CONCAT(MAX(m.menu_name), ' 외 ', COUNT(i.menu_id) - 1, '건')
+            ELSE MAX(m.menu_name)
+        END AS items
+    FROM 
+        OrderTable o
+        JOIN Item i ON o.order_id = i.order_id
+        JOIN Menu m ON i.menu_id = m.menu_id
+    WHERE 
+        o.is_accept = 2
+    GROUP BY 
+        o.order_id,
+        o.admin_id,
+        o.date,
+        o.table_num,
+        o.bank_name;
+END$$
+
+DELIMITER ;
+
+
+
+-- 주문 관리 (수락/거절)
+-- 주문의 데이터 중 isAccept가 2인 주문을 파라미터(수락, 거절)에 따라서 isAccept가 1 또는 0이 됨
+-- 수락 시 isAccept를 1로 변경하고 주문과 item을 JOIN하여 (이때 메뉴와 개수가 나와야 함) 이를 출력 값으로 (JSON 형식이며 메뉴:개수 형식으로)
+-- 수락 시 출력 값은 서버를 거쳐 주방으로 이동 (프로시저에서 수행X)
+
+DELIMITER $$
+
+CREATE PROCEDURE acceptOrder(
+    IN p_order_id BIGINT,
+    OUT p_result JSON
+)
+BEGIN
+    UPDATE OrderTable
+    SET is_accept = 1
+    WHERE order_id = p_order_id;
+
+    SELECT 
+        JSON_OBJECTAGG(
+            m.menu_name, i.count
+        ) INTO p_result
+    FROM 
+        Item i
+        JOIN Menu m ON i.menu_id = m.menu_id
+    WHERE 
+        i.order_id = p_order_id;
+END$$
+
+DELIMITER ;
+
+
+-- 거절 시 isAccept를 0으로 변경하고 출력 값을 JSON 형식으로 order_id:거절사유로 출력
+-- 거절 사유 : 입금 금액 부족, 입금 금액 초과, 카운터 방문 요망 
+
+DELIMITER $$
+
+CREATE PROCEDURE rejectOrder(
+    IN p_order_id BIGINT
+)
+BEGIN
+    UPDATE OrderTable
+    SET is_accept = 0
+    WHERE order_id = p_order_id;
+END$$
+
+DELIMITER ;
+
+
+-- 입금
+-- 서버에서 payInfo 테이블에 맞게 JSON이 내려올 것
+-- 그 JSON을 파라미터로 하여 payInfo 테이블에 매핑
+
+DELIMITER $$
+
+CREATE PROCEDURE insertPayInfo(
+    IN p_pay_info JSON
+)
+BEGIN
+    INSERT INTO PayInfo (bank, bank_account, pay_name, pay_price)
+    SELECT 
+        JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.bank')),
+        JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.bank_account')),
+        JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.pay_name')),
+        JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.pay_price'));
+END$$
+
+DELIMITER ;
+
+
+-- 완료 및 전달
+-- isAccept가 1인 order_id로 지정된 주문을 isAccept==3으로 
+
+DELIMITER $$
+
+CREATE PROCEDURE completeOrder(
+    IN p_order_id BIGINT
+)
+BEGIN
+    UPDATE OrderTable
+    SET is_accept = 3
+    WHERE order_id = p_order_id AND is_accept = 1;
+END$$
+
+DELIMITER ;
+
+
+-- 매출 복사
+-- 주문의 데이터 중 isAccept가 3인 데이터를 주문과 연결된 ITEM과 결합한 후 매출로 복사
+-- 주문에 속한 item을 total의 items에 '대표음식 외 n건'으로 표시
+-- Date는 yyyy-mm-dd hh-mm까지
+-- 가격은 주문에 속한 item의 종류와 개수에 따라 결정
+-- 매출 복사 후 isAccept가 3인 모든 주문과 그 주문과 연결된 item의 데이터 삭제
+
+DELIMITER $$
+
+CREATE PROCEDURE copySales()
+BEGIN
+    DECLARE v_items VARCHAR(200);
+
+    -- Copy sales to Total
+    INSERT INTO Total (items, date, price)
+    SELECT 
+        CASE 
+            WHEN COUNT(i.menu_id) > 1 THEN CONCAT(MAX(m.menu_name), ' 외 ', COUNT(i.menu_id) - 1, '건')
+            ELSE MAX(m.menu_name)
+        END AS items,
+        DATE_FORMAT(o.date, '%Y-%m-%d %H:%i') AS date,
+        SUM(m.price * i.count) AS price
+    FROM 
+        OrderTable o
+        JOIN Item i ON o.order_id = i.order_id
+        JOIN Menu m ON i.menu_id = m.menu_id
+    WHERE 
+        o.is_accept = 3
+    GROUP BY 
+        o.order_id, o.date;
+
+    -- Create a temporary table to store order_ids with is_accept = 3
+    CREATE TEMPORARY TABLE temp_orders AS
+    SELECT order_id FROM OrderTable WHERE is_accept = 3;
+
+    -- Delete items using the temporary table
+    DELETE FROM Item WHERE order_id IN (SELECT order_id FROM temp_orders);
+
+    -- Delete orders using the temporary table
+    DELETE FROM OrderTable WHERE order_id IN (SELECT order_id FROM temp_orders);
+
+    -- Drop the temporary table
+    DROP TEMPORARY TABLE temp_orders;
+END$$
+
+DELIMITER ;
+
+
+
