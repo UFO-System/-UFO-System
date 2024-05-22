@@ -182,28 +182,58 @@ CREATE PROCEDURE createOrder(
     IN p_items JSON
 )
 BEGIN
-    DECLARE v_order_id BIGINT;
+    DECLARE v_order_id1 BIGINT;
+    DECLARE v_order_id2 BIGINT;
+    DECLARE total_items INT;
 
-    -- Insert into OrderTable
+    -- Calculate total number of items
+    SET total_items = (SELECT COUNT(*) FROM JSON_TABLE(p_items, '$[*]' COLUMNS (dummy INT PATH '$.menu_id')) AS count_table);
+
+    -- Insert into OrderTable (first order)
     INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
     VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
+    SET v_order_id1 = LAST_INSERT_ID();
 
-    SET v_order_id = LAST_INSERT_ID();
-
-    -- Insert into Item from JSON
+    -- Insert items into Item table for the first order
     INSERT INTO Item (order_id, menu_id, count)
     SELECT 
-        v_order_id,
+        v_order_id1,
         menu_id,
         count
     FROM 
         JSON_TABLE(p_items, '$[*]' COLUMNS (
+            rownum FOR ORDINALITY,
             menu_id BIGINT PATH '$.menu_id',
             count BIGINT PATH '$.count'
-        )) AS item;
+        )) AS item
+    WHERE item.rownum <= 11;
+
+    -- Check if there are more than 11 items
+    IF total_items > 11 THEN
+        -- Insert into OrderTable (second order)
+        INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
+        VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
+        SET v_order_id2 = LAST_INSERT_ID();
+
+        -- Insert remaining items into Item table for the second order
+        INSERT INTO Item (order_id, menu_id, count)
+        SELECT 
+            v_order_id2,
+            menu_id,
+            count
+        FROM 
+            JSON_TABLE(p_items, '$[*]' COLUMNS (
+                rownum FOR ORDINALITY,
+                menu_id BIGINT PATH '$.menu_id',
+                count BIGINT PATH '$.count'
+            )) AS item
+        WHERE item.rownum > 11;
+    END IF;
 END$$
 
 DELIMITER ;
+
+
 
 -- 주문 표시
 -- isAccept가 2인 주문을 표시하는데, 그 주문에 연결된 item은 '대표음식 외 n건'으로 표시

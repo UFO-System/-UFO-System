@@ -1,7 +1,7 @@
 -- InsertMenu 호출 예제
 CALL InsertMenu(
     "admin123", 
-    "Spaghetti", 
+    "스파게티", 
     12000, 
     @status_message
 );
@@ -9,8 +9,88 @@ SELECT @status_message;
 
 CALL InsertMenu(
     "admin123", 
-    "Pizza", 
+    "피자", 
     15000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "족발", 
+    19000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨1", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨2", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨3", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨4", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨5", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨6", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨7", 
+    23000, 
+    @status_message
+);
+SELECT @status_message;
+
+CALL InsertMenu(
+    "admin123", 
+    "치킨8", 
+    23000, 
     @status_message
 );
 SELECT @status_message;
@@ -36,18 +116,4 @@ SELECT @status_message;
 -- 확인을 위한 메뉴 정보 조회
 SELECT * FROM Menu;
 
-CALL InsertMenu(
-    "admin123", 
-    "족발", 
-    19000, 
-    @status_message
-);
-SELECT @status_message;
 
-CALL InsertMenu(
-    "admin123", 
-    "치킨", 
-    19000, 
-    @status_message
-);
-SELECT @status_message;
