@@ -22,15 +22,22 @@ CREATE PROCEDURE Login(
     OUT p_status_message VARCHAR(255)
 )
 BEGIN
-    DECLARE hashed_pwd VARCHAR(64);
+    DECLARE db_hashed_pwd VARCHAR(128);
+    DECLARE db_salt VARCHAR(16);
+    DECLARE input_hashed_pwd VARCHAR(128);
     
-    -- SHA-256 해싱
-    SET hashed_pwd = SHA2(p_pwd, 256);
-    
-    -- 사용자 조회
-    IF EXISTS (SELECT 1 FROM Admin WHERE admin_id = p_admin_id) THEN
+    -- 사용자 조회 및 솔트와 해시된 비밀번호 가져오기
+    SELECT pwd, salt INTO db_hashed_pwd, db_salt 
+    FROM Admin 
+    WHERE admin_id = p_admin_id;
+
+    -- 사용자 존재 여부 확인
+    IF db_salt IS NOT NULL THEN
+        -- 입력된 비밀번호를 솔트와 함께 해시
+        SET input_hashed_pwd = SHA2(CONCAT(p_pwd, db_salt), 256);
+
         -- 비밀번호 검수
-        IF EXISTS (SELECT 1 FROM Admin WHERE admin_id = p_admin_id AND pwd = hashed_pwd) THEN
+        IF db_hashed_pwd = input_hashed_pwd THEN
             SET p_status_message = 'Login successful';
         ELSE
             SET p_status_message = 'Incorrect password';
@@ -41,6 +48,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
 
 
 -- 정보 변경
@@ -57,22 +65,31 @@ CREATE PROCEDURE UpdateAdminInfo(
     IN p_new_pwd VARCHAR(64), 
     IN p_new_name VARCHAR(90), 
     IN p_new_bank VARCHAR(30), 
-    IN p_new_bank_account VARCHAR(30), 
+    IN p_new_back_account VARCHAR(30), 
     IN p_new_phone VARCHAR(30), 
     OUT p_status_message VARCHAR(255)
 )
 BEGIN
-    DECLARE hashed_old_pwd VARCHAR(64);
-    DECLARE hashed_new_pwd VARCHAR(64);
+    DECLARE db_hashed_pwd VARCHAR(128);
+    DECLARE db_salt VARCHAR(16);
+    DECLARE hashed_old_pwd VARCHAR(128);
+    DECLARE hashed_new_pwd VARCHAR(128);
+    
+    -- 사용자 조회 및 솔트와 해시된 비밀번호 가져오기
+    SELECT pwd, salt INTO db_hashed_pwd, db_salt 
+    FROM Admin 
+    WHERE admin_id = p_admin_id;
 
-    -- SHA-256 해싱
-    SET hashed_old_pwd = SHA2(p_old_pwd, 256);
-    SET hashed_new_pwd = SHA2(p_new_pwd, 256);
+    -- 현재 비밀번호 해싱
+    SET hashed_old_pwd = SHA2(CONCAT(p_old_pwd, db_salt), 256);
     
     -- 비밀번호 검수 및 정보 수정
-    IF EXISTS (SELECT 1 FROM Admin WHERE admin_id = p_admin_id AND pwd = hashed_old_pwd) THEN
+    IF db_hashed_pwd = hashed_old_pwd THEN
+        -- 새로운 비밀번호 해싱
+        SET hashed_new_pwd = SHA2(CONCAT(p_new_pwd, db_salt), 256);
+        
         UPDATE Admin
-        SET pwd = hashed_new_pwd, admin_name = p_new_name, bank = p_new_bank, back_account = p_new_bank_account, phone = p_new_phone
+        SET pwd = hashed_new_pwd, admin_name = p_new_name, bank = p_new_bank, back_account = p_new_back_account, phone = p_new_phone
         WHERE admin_id = p_admin_id;
         
         -- 업데이트 확인
@@ -90,6 +107,8 @@ DELIMITER ;
 
 
 
+
+
 -- 회원 가입
 -- : 아이디가 있는지 조회 -> 없으면 가능
 -- : 정보 입력한 것을 insert
@@ -101,20 +120,26 @@ CREATE PROCEDURE RegisterAdmin(
     IN p_pwd VARCHAR(64), 
     IN p_admin_name VARCHAR(90), 
     IN p_bank VARCHAR(30), 
-    IN p_bank_account VARCHAR(30), 
+    IN p_back_account VARCHAR(30), 
     IN p_phone VARCHAR(30), 
     OUT p_status_message VARCHAR(255)
 )
 BEGIN
+    -- SHA-256 해싱 및 솔트 생성
+    DECLARE hashed_pwd VARCHAR(128);
+    DECLARE salt VARCHAR(16);
+    
+    -- 솔트 생성
+    SET salt = LEFT(MD5(RAND()), 16);
+    
     -- SHA-256 해싱
-    DECLARE hashed_pwd VARCHAR(64);
-    SET hashed_pwd = SHA2(p_pwd, 256);
+    SET hashed_pwd = SHA2(CONCAT(p_pwd, salt), 256);
     
     -- 아이디 중복 확인
     IF NOT EXISTS (SELECT 1 FROM Admin WHERE admin_id = p_admin_id) THEN
         -- 새로운 관리자 추가
-        INSERT INTO Admin (admin_id, pwd, admin_name, bank, back_account, phone)
-        VALUES (p_admin_id, hashed_pwd, p_admin_name, p_bank, p_bank_account, p_phone);
+        INSERT INTO Admin (admin_id, pwd, salt, admin_name, bank, back_account, phone)
+        VALUES (p_admin_id, hashed_pwd, salt, p_admin_name, p_bank, p_back_account, p_phone);
         SET p_status_message = 'Registration successful';
     ELSE
         SET p_status_message = 'ID already exists';
@@ -122,6 +147,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
 
 
 

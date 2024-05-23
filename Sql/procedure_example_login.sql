@@ -1,11 +1,11 @@
 -- RegisterAdmin 호출 예제
 CALL RegisterAdmin(
     "admin123", 
-    "adminpass", -- 비밀번호는 프로시저 내부에서 SHA-256으로 해싱됨
+    "adminpass", 
     "Admin Name", 
-    "001", -- 은행 코드
-    REPLACE("352-164018-4543", "-", ""), -- 하이픈 제거
-    REPLACE("010-8968-3795", "-", ""), -- 하이픈 제거
+    "001", 
+    REPLACE("352-164018-4543", "-", ""), 
+    REPLACE("010-8968-3795", "-", ""), 
     @status_message
 );
 SELECT @status_message;
@@ -33,6 +33,18 @@ SELECT @status_message;
 CALL Login(
     "admin123", 
     "wrongpassword", -- 비밀번호는 프로시저 내부에서 SHA-256으로 해싱됨
+    @status_message
+);
+SELECT @status_message;
+
+CALL UpdateAdminInfo(
+    "admin123", 
+    "adminpass", -- 현재 비밀번호
+    "newpass123", -- 새로운 비밀번호
+    "New Admin Name", 
+    "002", 
+    REPLACE("352-164018-9999", "-", ""), 
+    REPLACE("010-9999-9999", "-", ""), 
     @status_message
 );
 SELECT @status_message;
