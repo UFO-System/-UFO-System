@@ -6,7 +6,8 @@ CALL UpdateAdminInfo(
     "New Admin Name", 
     "002", -- 새로운 은행 코드
     REPLACE("352-164018-9999", "-", ""), -- 새로운 계좌 번호 (하이픈 제거)
-    REPLACE("010-9999-9999", "-", ""), -- 새로운 전화번호 (하이픈 제거)
+    REPLACE("010-9999-9999", "-", ""), -- 새로운 전화번호 (하이픈 제거),
+    "연암공대 스소점",
     @status_message
 );
 SELECT @status_message;

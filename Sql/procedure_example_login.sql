@@ -1,50 +1,55 @@
--- RegisterAdmin 호출 예제
-CALL RegisterAdmin(
-    "admin123", 
-    "adminpass", 
-    "Admin Name", 
-    "001", 
-    REPLACE("352-164018-4543", "-", ""), 
-    REPLACE("010-8968-3795", "-", ""), 
-    @status_message
-);
-SELECT @status_message;
+-- Login Procedure Example
+SET @p_admin_id = 'new_admin123';
+SET @p_pwd = 'hashed_password';  -- 이미 해시된 비밀번호
+SET @p_status_message = '';
 
--- 확인을 위한 관리자 정보 조회
-SELECT * FROM Admin;
+CALL Login(@p_admin_id, @p_pwd, @p_status_message);
+SELECT @p_status_message;
 
--- Login 호출 예제
-CALL Login(
-    "admin123", 
-    "adminpass", -- 비밀번호는 프로시저 내부에서 SHA-256으로 해싱됨
-    @status_message
-);
-SELECT @status_message;
-
--- 로그인 시 ID가 없는 경우
-CALL Login(
-    "nonexistent_id", 
-    "adminpass", -- 비밀번호는 프로시저 내부에서 SHA-256으로 해싱됨
-    @status_message
-);
-SELECT @status_message;
-
--- 로그인 시 비밀 번호가 맞지 않는 경우
-CALL Login(
-    "admin123", 
-    "wrongpassword", -- 비밀번호는 프로시저 내부에서 SHA-256으로 해싱됨
-    @status_message
-);
-SELECT @status_message;
+-- UpdateAdminInfo Procedure Example
+SET @p_admin_id = 'admin123';
+SET @p_old_pwd = 'hashed_password';  -- 이미 해시된 현재 비밀번호
+SET @p_new_pwd = 'hashed_password';  -- 이미 해시된 새로운 비밀번호
+SET @p_new_name = 'New Admin Name';
+SET @p_new_bank = 'New Bank';
+SET @p_new_back_account = 'New Back Account';
+SET @p_new_phone = 'New Phone Number';
+SET @p_new_member = 'New Member Info';
+SET @p_status_message = '';
 
 CALL UpdateAdminInfo(
-    "admin123", 
-    "adminpass", -- 현재 비밀번호
-    "newpass123", -- 새로운 비밀번호
-    "New Admin Name", 
-    "002", 
-    REPLACE("352-164018-9999", "-", ""), 
-    REPLACE("010-9999-9999", "-", ""), 
-    @status_message
+    @p_admin_id, 
+    @p_old_pwd, 
+    @p_new_pwd, 
+    @p_new_name, 
+    @p_new_bank, 
+    @p_new_back_account, 
+    @p_new_phone, 
+    @p_new_member, 
+    @p_status_message
 );
-SELECT @status_message;
+SELECT @p_status_message;
+
+-- RegisterAdmin Procedure Example
+SET @p_admin_id = 'admin123';
+SET @p_pwd = 'hashed_password';  -- 이미 해시된 비밀번호
+SET @p_admin_name = 'New Admin Name';
+SET @p_bank = 'Bank Name';
+SET @p_back_account = 'Back Account';
+SET @p_phone = 'Phone Number';
+SET @p_member = 'Member Info';
+SET @p_status_message = '';
+
+CALL RegisterAdmin(
+    @p_admin_id, 
+    @p_pwd, 
+    @p_admin_name, 
+    @p_bank, 
+    @p_back_account, 
+    @p_phone, 
+    @p_member, 
+    @p_status_message
+);
+SELECT @p_status_message;
+
+select * from admin;

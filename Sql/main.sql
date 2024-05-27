@@ -14,11 +14,12 @@ DROP TABLE IF EXISTS Admin;
 
 CREATE TABLE `Admin` (
     `admin_id` VARCHAR(30) NOT NULL,
-    `pwd` VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 필요',
+    `pwd` VARCHAR(64) NOT NULL COMMENT 'SHA-256 암호화 이미 됨',
     `admin_name` VARCHAR(90) NOT NULL,
     `bank` VARCHAR(30) NOT NULL,
     `back_account` VARCHAR(30) NOT NULL COMMENT '여기로 받아오는 것',
     `phone` VARCHAR(30) NOT NULL,
+    `member` VARCHAR(30) NOT NULL,
     PRIMARY KEY (`admin_id`)
 );
 
@@ -89,4 +90,3 @@ ALTER TABLE `Item` ADD CONSTRAINT `FK_Menu_TO_Item_1` FOREIGN KEY (
     `menu_id`
 );
 
-ALTER TABLE Admin ADD COLUMN salt VARCHAR(16) NOT NULL AFTER pwd;
