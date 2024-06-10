@@ -48,6 +48,8 @@ CREATE TABLE `Menu` (
     PRIMARY KEY (`menu_id`, `admin_id`)
 );
 
+ALTER TABLE `Menu` ADD COLUMN `image_url` VARCHAR(255) NULL;
+
 CREATE TABLE `OrderTable` (
     `order_id` BIGINT NOT NULL AUTO_INCREMENT,
     `admin_id` VARCHAR(30) NOT NULL,

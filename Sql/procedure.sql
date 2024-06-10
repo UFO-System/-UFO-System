@@ -134,16 +134,18 @@ CREATE PROCEDURE InsertMenu(
     IN p_admin_id VARCHAR(30), 
     IN p_menu_name VARCHAR(30), 
     IN p_price BIGINT, 
+    IN p_image_url VARCHAR(255),
     OUT p_status_message VARCHAR(255)
 )
 BEGIN
     -- 메뉴 추가
-    INSERT INTO Menu (admin_id, menu_name, price)
-    VALUES (p_admin_id, p_menu_name, p_price);
+    INSERT INTO Menu (admin_id, menu_name, price, image_url)
+    VALUES (p_admin_id, p_menu_name, p_price, p_image_url);
     SET p_status_message = 'Menu item inserted successfully';
 END //
 
 DELIMITER ;
+
 
 
 -- 메뉴 삭제
@@ -166,6 +168,7 @@ BEGIN
 END //
 
 DELIMITER ;
+
 
 -- 사용자가 주문
 -- 사용자가 menu를 골라 주문을 생성할 경우
