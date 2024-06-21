@@ -1,5 +1,5 @@
 -- Login Procedure Example
-SET @p_admin_id = 'new_admin123';
+SET @p_admin_id = 'admin123';
 SET @p_pwd = 'hashed_password';  -- 이미 해시된 비밀번호
 SET @p_status_message = '';
 

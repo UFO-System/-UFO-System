@@ -5,7 +5,7 @@ CALL createOrder(
     CURDATE(), -- 현재 날짜
     1, -- 테이블 번호
     "001", -- 은행 이름
-    '[{"menu_id": 1, "count": 2}, {"menu_id": 4, "count": 1}, {"menu_id": 5, "count": 1}, {"menu_id": 6, "count": 1}, {"menu_id": 7, "count": 1}, {"menu_id": 8, "count": 1}, {"menu_id": 9, "count": 1}, {"menu_id": 10, "count": 1}, {"menu_id": 11, "count": 1}, {"menu_id": 12, "count": 1}, {"menu_id": 3, "count": 1}, {"menu_id": 2, "count": 1}]' -- 주문 항목을 JSON 형식으로 전달
+    '[{"menu_id": 3, "count": 2}, {"menu_id": 4, "count": 1}, {"menu_id": 5, "count": 1}, {"menu_id": 6, "count": 1}, {"menu_id": 7, "count": 1}, {"menu_id": 8, "count": 1}, {"menu_id": 9, "count": 1}, {"menu_id": 10, "count": 1}, {"menu_id": 11, "count": 1}, {"menu_id": 12, "count": 1}]' -- 주문 항목을 JSON 형식으로 전달
 );
 
 CALL createOrder(

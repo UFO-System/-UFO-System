@@ -139,12 +139,20 @@ CREATE PROCEDURE InsertMenu(
 )
 BEGIN
     -- 메뉴 추가
-    INSERT INTO Menu (admin_id, menu_name, price, image_url)
-    VALUES (p_admin_id, p_menu_name, p_price, p_image_url);
+    IF p_image_url IS NULL THEN
+        INSERT INTO Menu (admin_id, menu_name, price, image_url)
+        VALUES (p_admin_id, p_menu_name, p_price, NULL);
+    ELSE
+        INSERT INTO Menu (admin_id, menu_name, price, image_url)
+        VALUES (p_admin_id, p_menu_name, p_price, p_image_url);
+    END IF;
+
     SET p_status_message = 'Menu item inserted successfully';
 END //
 
 DELIMITER ;
+
+
 
 
 
@@ -190,52 +198,60 @@ BEGIN
     DECLARE v_order_id2 BIGINT;
     DECLARE total_items INT;
 
-    -- Calculate total number of items
-    SET total_items = (SELECT COUNT(*) FROM JSON_TABLE(p_items, '$[*]' COLUMNS (dummy INT PATH '$.menu_id')) AS count_table);
+    -- Calculate total number of valid items
+    SET total_items = (SELECT COUNT(*) FROM JSON_TABLE(p_items, '$[*]' COLUMNS (
+        menu_id BIGINT PATH '$.menu_id'
+    )) AS jt
+    JOIN Menu m ON jt.menu_id = m.menu_id);
 
-    -- Insert into OrderTable (first order)
-    INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
-    VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
-    SET v_order_id1 = LAST_INSERT_ID();
-
-    -- Insert items into Item table for the first order
-    INSERT INTO Item (order_id, menu_id, count)
-    SELECT 
-        v_order_id1,
-        menu_id,
-        count
-    FROM 
-        JSON_TABLE(p_items, '$[*]' COLUMNS (
-            rownum FOR ORDINALITY,
-            menu_id BIGINT PATH '$.menu_id',
-            count BIGINT PATH '$.count'
-        )) AS item
-    WHERE item.rownum <= 11;
-
-    -- Check if there are more than 11 items
-    IF total_items > 11 THEN
-        -- Insert into OrderTable (second order)
+    -- Insert into OrderTable (first order) if there are valid items
+    IF total_items > 0 THEN
         INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
         VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
-        SET v_order_id2 = LAST_INSERT_ID();
+        SET v_order_id1 = LAST_INSERT_ID();
 
-        -- Insert remaining items into Item table for the second order
+        -- Insert items into Item table for the first order
         INSERT INTO Item (order_id, menu_id, count)
         SELECT 
-            v_order_id2,
-            menu_id,
-            count
+            v_order_id1,
+            jt.menu_id,
+            jt.count
         FROM 
             JSON_TABLE(p_items, '$[*]' COLUMNS (
                 rownum FOR ORDINALITY,
                 menu_id BIGINT PATH '$.menu_id',
                 count BIGINT PATH '$.count'
-            )) AS item
-        WHERE item.rownum > 11;
+            )) AS jt
+        JOIN Menu m ON jt.menu_id = m.menu_id
+        WHERE jt.rownum <= 11;
+
+        -- Check if there are more than 11 items
+        IF total_items > 11 THEN
+            -- Insert into OrderTable (second order)
+            INSERT INTO OrderTable (admin_id, is_accept, date, table_num, bank_name)
+            VALUES (p_admin_id, p_is_accept, p_date, p_table_num, p_bank_name);
+            SET v_order_id2 = LAST_INSERT_ID();
+
+            -- Insert remaining items into Item table for the second order
+            INSERT INTO Item (order_id, menu_id, count)
+            SELECT 
+                v_order_id2,
+                jt.menu_id,
+                jt.count
+            FROM 
+                JSON_TABLE(p_items, '$[*]' COLUMNS (
+                    rownum FOR ORDINALITY,
+                    menu_id BIGINT PATH '$.menu_id',
+                    count BIGINT PATH '$.count'
+                )) AS jt
+            JOIN Menu m ON jt.menu_id = m.menu_id
+            WHERE jt.rownum > 11;
+        END IF;
     END IF;
 END$$
 
 DELIMITER ;
+
 
 
 
@@ -331,8 +347,9 @@ CREATE PROCEDURE insertPayInfo(
     IN p_pay_info JSON
 )
 BEGIN
-    INSERT INTO PayInfo (bank, bank_account, pay_name, pay_price)
+    INSERT INTO PayInfo (admin_id, bank, bank_account, pay_name, pay_price)
     SELECT 
+        JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.admin_id')),
         JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.bank')),
         JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.bank_account')),
         JSON_UNQUOTE(JSON_EXTRACT(p_pay_info, '$.pay_name')),
@@ -373,14 +390,15 @@ BEGIN
     DECLARE v_items VARCHAR(200);
 
     -- Copy sales to Total
-    INSERT INTO Total (items, date, price)
+    INSERT INTO Total (items, date, price, admin_id)
     SELECT 
         CASE 
             WHEN COUNT(i.menu_id) > 1 THEN CONCAT(MAX(m.menu_name), ' 외 ', COUNT(i.menu_id) - 1, '건')
             ELSE MAX(m.menu_name)
         END AS items,
         DATE_FORMAT(o.date, '%Y-%m-%d %H:%i') AS date,
-        SUM(m.price * i.count) AS price
+        SUM(m.price * i.count) AS price,
+        o.admin_id
     FROM 
         OrderTable o
         JOIN Item i ON o.order_id = i.order_id
@@ -388,7 +406,7 @@ BEGIN
     WHERE 
         o.is_accept = 3
     GROUP BY 
-        o.order_id, o.date;
+        o.order_id, o.date, o.admin_id;
 
     -- Create a temporary table to store order_ids with is_accept = 3
     CREATE TEMPORARY TABLE temp_orders AS
@@ -405,6 +423,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
 
 
 

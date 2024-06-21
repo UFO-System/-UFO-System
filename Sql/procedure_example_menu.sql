@@ -3,6 +3,7 @@ CALL InsertMenu(
     "admin123", 
     "스파게티", 
     12000, 
+    "http://example.com/spaghetti.jpg", 
     @status_message
 );
 SELECT @status_message;
@@ -11,6 +12,7 @@ CALL InsertMenu(
     "admin123", 
     "피자", 
     15000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -19,6 +21,7 @@ CALL InsertMenu(
     "admin123", 
     "족발", 
     19000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -27,6 +30,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -35,6 +39,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨1", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -43,6 +48,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨2", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -51,6 +57,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨3", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -59,6 +66,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨4", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -67,6 +75,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨5", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -75,6 +84,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨6", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -83,6 +93,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨7", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
@@ -91,6 +102,7 @@ CALL InsertMenu(
     "admin123", 
     "치킨8", 
     23000, 
+    NULL,
     @status_message
 );
 SELECT @status_message;
