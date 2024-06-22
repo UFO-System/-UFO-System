@@ -21,10 +21,10 @@ PM : 김건우 <br/>
 
 # 프로젝트 소개
 ## UFO's
-U - University
-F - Festival
-O - Order
-S - System
+U - University<br/>
+F - Festival<br/>
+O - Order<br/>
+S - System<br/>
 
 기존 축제 또는 행사에서의 사업자 등록 없이 계좌이체로 계산하는 시스템을 적은 인력으로도 운영할 수 있게 도와주는 편한 서비스
 
