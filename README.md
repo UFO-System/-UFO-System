@@ -2,9 +2,9 @@
 <a><img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white">
-<img src="https://img.shields.io/badge/VSC-181717?style=for-the-badge&logo=VisualStudioCode&logoColor=blue">
-<img src="https://img.shields.io/badge/Node.js-646CFF?style=for-the-badge&logo=Node.js&logoColor=green">
-<img src="https://img.shields.io/badge/MySQL-181717?style=for-the-badge&logo=MySql&logoColor=blue"></a>
+<img src="https://img.shields.io/badge/VSC-FFFFFF?style=for-the-badge&logo=VisualStudioCode&logoColor=blue">
+<img src="https://img.shields.io/badge/Node.js-6aa84f?style=for-the-badge&logo=Node.js&logoColor=green">
+<img src="https://img.shields.io/badge/MySQL-FFFFFF?style=for-the-badge&logo=MySql&logoColor=blue"></a>
 
 PM : 김건우 <br/>
 부PM : 손원일 <br/>
