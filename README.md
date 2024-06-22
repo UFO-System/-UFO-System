@@ -6,18 +6,20 @@
 <img src="https://img.shields.io/badge/Node.js-6aa84f?style=for-the-badge&logo=Node.js&logoColor=green">
 <img src="https://img.shields.io/badge/MySQL-6fa8dc?style=for-the-badge&logo=MySql&logoColor=blue"></a>
 
+# 팀원 소개
+## PM
 PM : 김건우 <br/>
 부PM : 손원일 <br/>
 
-FrontEnd 개발자<br/>
+## FrontEnd 개발자
 팀장 : 김호진<br/>
 팀원 : 배준재,옥준서,모정환<br/>
 
-FrontEnd 개발자<br/>
+## BackEnd 개발자
 팀장 : 김재영, 류태웅(DB 팀장)<br/>
 팀원 : 최일한<br/>
 
-프로젝트 소개: 기존 축제 또는 행사에서의 사업자 등록 없이 계좌이체로 계산하는 시스템을 적은 인력으로도 운영할 수 있게 도와주는 편한 서비스
+# 프로젝트 소개: 기존 축제 또는 행사에서의 사업자 등록 없이 계좌이체로 계산하는 시스템을 적은 인력으로도 운영할 수 있게 도와주는 편한 서비스
 
 # 핵심 기능
 - 간편한 QR 코드 주문 시스템: 누구나 쉽게 이용할 수 있도록 웹/앱 대신 간편한 QR 코드 주문 시스템을 활용
