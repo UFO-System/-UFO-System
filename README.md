@@ -99,22 +99,23 @@ FrontEnd 개발자<br/>
 <img src="https://github.com/hojin535/ufo-front/assets/123153695/c258047f-9c2f-4b60-acc9-bd82394de1a9"  width="200" height="400"/>
 
 ## 사용 라이브러리
-프론트엔드 관련
-React(v18.2.66): 프론트엔드 개발을 위한 라이브러리
-Material-UI(v5.15.20): UI 스타일링 컴포넌트 라이브러리
-Vite(v5.2.0): 개발 서버 및 번들러
-react-router-dom(v6.22.3): 클라이언트 측 라우팅
-react-qr-code(v2.0.13): QR 코드 생성
-react-device-detect(v2.2.3): 사용자 기기 인식
-백엔드 관련
-Node.js 패키지:
-Express.js: 웹 서버 구현을 위한 라이브러리
-Socket.IO: 실시간 양방향 통신
-axios(v1.7.2): 서버 통신용 라이브러리
-보안 및 코드 품질 도구
-ESLint: JavaScript 코드 스타일 검사 도구
-Prettier: 코드 포맷터
+### 프론트엔드 관련
+- React(v18.2.66): 프론트엔드 개발을 위한 라이브러리
+- Material-UI(v5.15.20): UI 스타일링 컴포넌트 라이브러리
+- Vite(v5.2.0): 개발 서버 및 번들러
+- react-router-dom(v6.22.3): 클라이언트 측 라우팅
+- react-qr-code(v2.0.13): QR 코드 생성
+- react-device-detect(v2.2.3): 사용자 기기 인식
 
+### 백엔드 관련
+- Node.js 패키지:
+- Express.js: 웹 서버 구현을 위한 라이브러리
+- Socket.IO: 실시간 양방향 통신
+- axios(v1.7.2): 서버 통신용 라이브러리
+
+### 보안 및 코드 품질 도구
+- ESLint: JavaScript 코드 스타일 검사 도구
+- Prettier: 코드 포맷터.
 
 ## 시작 가이드
 설치 필요
