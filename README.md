@@ -98,6 +98,35 @@ FrontEnd 개발자<br/>
 ### 상세 주문 내역 확인
 <img src="https://github.com/hojin535/ufo-front/assets/123153695/c258047f-9c2f-4b60-acc9-bd82394de1a9"  width="200" height="400"/>
 
+## 사용 기술
+### 공통
+- Visual Studio Code: 통합 개발 환경(IDE)
+- Git, GitHub: 코드 관리 및 협업
+
+### Frontend
+개발 도구 및 IDE
+- Vite(v5.2.0): 개발 서버 및 번들러
+
+패키지 매니저
+- npm(v20.11.1): JavaScript 패키지 관리자
+
+기타 도구
+- ESLint: JavaScript 코드 스타일 검사 도구
+- Prettier: 코드 포맷터
+
+### Backend
+패키지 매니저
+- npm: Node.js 패키지 관리자
+
+런타임 환경
+- Node.js: JavaScript 런타임 환경
+
+### DB
+데이터베이스 관리 도구
+- MySQL Workbench: 데이터베이스 관리 도구.
+
+
+
 ## 사용 라이브러리
 ### 프론트엔드 관련
 - React(v18.2.66): 프론트엔드 개발을 위한 라이브러리
