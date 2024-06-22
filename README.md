@@ -6,7 +6,6 @@
 <img src="https://img.shields.io/badge/VSC-181717?style=for-the-badge&logo=VSC&logoColor=pink">
 <img src="https://img.shields.io/badge/Node.js-646CFF?style=for-the-badge&logo=Vite&logoColor=white">
 <img src="https://img.shields.io/badge/MySQL-181717?style=for-the-badge&logo=MySql&logoColor=white">
-<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white">
 </a>
 
 PM : 김건우 <br/>
